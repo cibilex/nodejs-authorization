@@ -1,0 +1,53 @@
+<form>
+  <h2>Sign up</h2>
+  <div id="resulBox" style="color:blue;font-size: 1.3rem;"></div>
+  <div id="errBox" class="error"></div>
+
+  <label for="username">username : </label>
+  <input type="text" name="username" required id="username" />
+  <label for="email">email :</label>
+  <input type="email" name="email" required id="email" />
+  <label for="password">password :</label>
+  <input type="password" required name="password" id="password" />
+  <button class="btn">Sign up</button>
+</form>
+
+<script>
+  const form = document.querySelector("form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = form.email.value;
+    const password = form.password.value;
+    const username = form.username.value;
+    const resulBox=document.querySelector("#resulBox")
+    const errBox=document.querySelector("div#errBox")
+
+    errBox.textContent=""
+    try {
+      const res = await fetch("/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            username
+        }),
+      });
+      const data = await res.json();
+      if(!data.success){
+        console.log(data)
+      errBox.textContent=data.message
+      }
+      if(data.success){
+      resulBox.textContent="successfully registered"
+      setTimeout(()=>{
+          location.replace("/")
+      },1000)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  });
+</script>
